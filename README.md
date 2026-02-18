@@ -88,15 +88,16 @@ Standard network theory typically requires **cooperative interactions**:
 $$ A_{ij} \ge 0 \quad \forall i \neq j $$
 This ensures the coupling matrix has the properties of a standard Laplacian (M-matrix), guaranteeing stability if the coupling strength is sufficient.
 
-### Relaxed Condition (Our Method)
 We demonstrate that non-negativity is **not necessary**. Synchronization is preserved if the **Spectral Stability Condition** is met:
 
+> [!IMPORTANT]
 > **Condition**: The eigenvalues $\lambda_k$ of the coupling matrix $\mathcal{C}$ must lie within the stability region of the Master Stability Function (MSF) for the dynamical system.
 >
-> $$ \text{Re}(\lambda_k) < 0 \quad \text{for } k=2 \dots N $$
+> $\text{Re}(\lambda_k) < 0 \quad \text{for } k=2 \dots N$
 
 In practice, this means we can have negative links ($A_{ij} < 0$) as long as the "net" connectivity remains diffusive and stable. For Lorenz and Jansen-Rit systems, this often implies that the second largest eigenvalue $\tilde{\lambda}_2$ must satisfy:
-$$ |\tilde{\lambda}_2| \ge |\bar{d}| $$
+$|\tilde{\lambda}_2| \ge |\bar{d}|$
+
 Where $\bar{d}$ is the maximum Lyapunov exponent (divergence) of the isolated node dynamics.
 
 ## 💻 Installation
