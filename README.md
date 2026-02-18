@@ -14,13 +14,13 @@ This repository explores the counter-intuitive phenomenon where networks can ach
 
 ## 🧠 Biological Modelling: Neural Mass Networks
 
-Our primary focus is applying the "negative coupling" concept to neuroscience. In brain networks, **inhibitory interneurons** play a crucial role in regulating activity. We model this using the **Jansen-Rit Neural Mass Model**, where each node represents a cortical column.
+This project applies the "negative coupling" concept to the study of cortical networks, where **inhibitory interneurons** are essential for regulating activity. We utilize the **Jansen-Rit Neural Mass Model** to simulate cortical columns, exploring how inhibition "sculpts" global dynamics.
 
 ### Key Capabilities
-- **Cortical Column Simulation**: Implements the standard Jansen-Rit differential equations (Pyramidal, Excitatory, Inhibitory populations).
-- **Inhibitory Synaptic Connections**: Simulates long-range inhibition by introducing **negative weights** ($A_{ij} < 0$) in the coupling matrix.
-- **Spectral Stability Search**: An adaptive algorithm generates Small-World topologies that satisfy the spectral stability condition (all non-zero eigenvalues $\lambda \le 0$) even with mixed-sign couplings.
-- **Perfect Synchronization**: Demonstrates that networks can synchronize (Error $\approx 0$) with significant fractions of inhibitory links.
+- **Cortical Column Simulation**: High-fidelity implementation of the Jansen-Rit ODEs (Pyramidal, Excitatory, Inhibitory populations).
+- **Mixed-Sign Topology**: Simulates realistic networks with both excitatory and inhibitory synaptic connections ($A_{ij} < 0$).
+- **Spectral Stability**: Algorithms to generate Small-World topologies that satisfy the **Relaxed Spectral Stability Condition**, ensuring coherence even in competitive networks.
+- **Robust Synchronization**: Visual proof that networks can achieve perfect synchronization (Zero Error) despite significant inhibitory feedback.
 
 ### Run the Simulation
 ```bash
@@ -28,16 +28,17 @@ python3 jansen_rit_network.py
 ```
 *Output: Generates `jansen_rit_simulation.png` visualizing the coupling matrix spectrum, network topology, and neural activity.*
 
-### Results & Interpretation
+### Research Insights
 
-The simulation reveals a critical insight for biological networks: **Inhibition does not preclude synchronization; in fact, it structures it.**
+Our simulations reveal a critical mechanism for biological networks: **Inhibition does not preclude synchronization; it structures it.**
 
-- **Spectral Stability in E-I Networks**: The eigenvalue plot (top-right) shows that even with ~10% negative edges (red lines in the topology graph), the spectral stability condition is met (all non-zero eigenvalues $\lambda \le 0$). This confirms that the *net* connectivity remains stable despite local antagonisms.
-- **Emergence of Coherent Rhythms**: The time-series plot (bottom-right) shows the neural activity of 20 cortical columns. Despite the inhibitory connections providing "negative feedback," the system converges to a unified rhythm (global synchronization error $\rightarrow 0$).
-- **Implications for Brain Dynamics**:
-    - **E-I Balance**: This reflects the delicate Excitatory-Inhibitory balance crucial for healthy brain function.
-    - **Cognitive Binding**: Synchronization is hypothesized to be the mechanism behind binding different sensory features into a coherent percept. Our results suggest this binding can occur robustly even in the presence of required inhibition (e.g., lateral inhibition for sharpening signals).
-    - **Pathology**: It implies that seizures (hypersynchronization) might not just be "too much excitation" but potentially a failure of the *network topology* to maintain spectral stability, regardless of the sign of individual connections.
+- **Binding by Inhibition**: Contrary to the intuition that inhibition segregates activity, our results show that **inhibitory interneurons can actively bind functional assemblies**. By "sculpting" the network's eigenspectrum, inhibition defines the boundaries of the synchronization manifold.
+- **Robustness**: The system demonstrates remarkable robustness, maintaining global gamma-band coherence even with significant fractions of inhibitory connections (e.g., 10%), provided the global topology remains spectrally stable.
+- **Clinical Relevance**:
+    - **Epilepsy**: Suggests that hypersynchronization (seizures) can occur *even in the presence of strong inhibition* if the network's spectral properties become pathological.
+    - **Cognition**: Supports the "Binding by Synchrony" hypothesis, showing how flexible cognitive processing can emerge from fixed, mixed-sign anatomical connectivity.
+
+> **Read the full paper**: The complete scientific paper, including mathematical proofs and extensive citations, is available in the `paper/` directory.
 
 ---
 
@@ -57,6 +58,15 @@ We validate this using a network of **Lorenz Oscillators**, where $A_{ij}$ can b
 # Verify the foundational theory with Lorenz oscillators
 python3 lorenz_network.py
 ```
+
+### Analysis: Statistical Robustness
+We provide a standalone tool to quantify how rare stable configurations are. This script runs a Monte Carlo simulation to estimate the probability of finding a spectrally stable network as the fraction of inhibitory edges increases.
+
+```bash
+# Run the robustness analysis
+python3 probability_stability.py
+```
+*Output: Generates `probability_stability.png`, plotting the likelihood of stability vs. inhibition percentage.*
 
 ## 🔑 Stability Criteria for Synchronization
 
