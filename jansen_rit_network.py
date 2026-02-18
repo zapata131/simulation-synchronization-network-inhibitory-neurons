@@ -3,31 +3,22 @@ import scipy.linalg as la
 import matplotlib.pyplot as plt
 import networkx as nx
 
-# Jansen-Rit Model Parameters (Standard)
-# A, B: Maximum postsynaptic potential amplitudes (mV)
+# Jansen-Rit Model Parameters
 A = 3.25
 B = 22.0
-# a, b: Lumped rate constants (inverse of membrane time constants) (s^-1)
 a = 100.0
 b = 50.0
-# C1, C2, C3, C4: Connectivity constants
 C = 135.0
 C1 = C
 C2 = 0.8 * C
 C3 = 0.25 * C
 C4 = 0.25 * C
-# v0: Firing threshold (mV)
 v0 = 6.0
-# e0: Maximum firing rate (s^-1)
 e0 = 2.5
-# r: Steepness of the sigmoid function (mV^-1)
 r = 0.56
 
 def sigmoid(v):
-    """Sigmoid transfer function: converts membrane potential to firing rate."""
     # Clip exponent to avoid overflow
-    # e0 * 2 / (1 + exp(big)) -> 0
-    # e0 * 2 / (1 + exp(-big)) -> 2*e0
     val = r * (v0 - v)
     val = np.clip(val, -100, 100) # prevent overflow
     return 2 * e0 / (1 + np.exp(val))
@@ -48,7 +39,6 @@ class JansenRitNetwork:
             self.adj_matrix = nx.to_numpy_array(self.G)
             
             # Introduce Negative Couplings
-            # Randomly select a fraction of edges to have negative weights
             edges = list(self.G.edges())
             num_negative = int(len(edges) * negative_fraction)
             if num_negative > 0:
@@ -57,7 +47,7 @@ class JansenRitNetwork:
                 self.W = self.adj_matrix.copy()
                 for idx in negative_edges_indices:
                     u, v = edges[idx]
-                    self.W[u, v] = -0.5 # Weaker inhibition to help stability
+                    self.W[u, v] = -0.5 # Weaker inhibition
                     self.W[v, u] = -0.5
             else:
                 self.W = self.adj_matrix.copy()
@@ -96,53 +86,34 @@ class JansenRitNetwork:
 
     def dynamics(self, state, t):
         """
-        State vector for N nodes, each with 6 variables (y0, y1, y2, y3, y4, y5).
-        Total state size: 6 * N
-        Reshaped state: (N, 6)
-        
-        y0: Output of Excitatory Interneurons (EPSP to Pyramidal)
-        y1: Outut of Pyramidal Cells (EPSP to others) -> MAIN OUTPUT
-        y2: Output of Inhibitory Interneurons (IPSP to Pyramidal)
-        y3: Derivative of y0
-        y4: Derivative of y1
-        y5: Derivative of y2
+        y0: Excitatory Interneurons Output
+        y1: Pyramidal Output (Main)
+        y2: Inhibitory Interneurons Output
+        y3, y4, y5: Derivatives
         """
         X = state.reshape((self.N, 6))
         dX = np.zeros_like(X)
         
-        # Unpack variables for clarity
-        # y1 (index 1) is the main pyramidal output
-        # Input to the column (p) is assumed constant standard noise/input for now
-        # Standard input specific to Jansen Rit to induce oscillations
-        p_input = 120.0 + 50.0 * np.sin(2 * np.pi * 10 * t) # + noise usually
+        # Input (Standard Jansen-Rit)
+        p_input = 120.0 + 50.0 * np.sin(2 * np.pi * 10 * t)
         
-        # Coupling term: affects the input to the Pyramidal population
-        # Diffusive coupling on the main variable (y1 - y1_neighbor)
-        # Sum(C_ij * y1_j) -> since C_ii = -sum(C_ij), this is sum(A_ij * (y1_j - y1_i))
+        # Diffusive coupling term
         coupling_input = self.K * (self.C_matrix @ X[:, 1])
 
         for i in range(self.N):
             y0, y1, y2, y3, y4, y5 = X[i]
             
-            # Sigmoid of potentials
             s_y1_y2 = sigmoid(y1 - y2)
             s_y0 = sigmoid(y0)
             s_y1 = sigmoid(y1)
             
-            # Derivatives (Jansen-Rit Equations)
-            # y0_dot = y3
-            # y3_dot = A * a * s_y1_y2 - 2 * a * y3 - a * a * y0
+            # Derivatives
             dX[i, 0] = y3
             dX[i, 3] = A * a * s_y1_y2 - 2 * a * y3 - a * a * y0
             
-            # y1_dot = y4
-            # y4_dot = A * a * (p + C2 * s_y0 + Coupling) - 2 * a * y4 - a * a * y1
-            # Note: Coupling is added here as an external input to the Pyramidal population
             dX[i, 1] = y4
             dX[i, 4] = A * a * (p_input + C2 * s_y0 + coupling_input[i]) - 2 * a * y4 - a * a * y1
             
-            # y2_dot = y5
-            # y5_dot = B * b * (C4 * s_y1) - 2 * b * y5 - b * b * y2
             dX[i, 2] = y5
             dX[i, 5] = B * b * (C4 * s_y1) - 2 * b * y5 - b * b * y2
             

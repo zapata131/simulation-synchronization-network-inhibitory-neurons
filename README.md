@@ -1,4 +1,4 @@
-# Synchronization in Complex Networks with Negative Couplings: From Chaos to Neuroscience
+# Spectral Stability & Synchronization in Mixed-Sign Neural Networks
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Scientific Computing](https://img.shields.io/badge/SciPy-Stack-orange?style=flat-square&logo=scipy&logoColor=white)](https://scipy.org/)
@@ -67,6 +67,17 @@ We provide a standalone tool to quantify how rare stable configurations are. Thi
 python3 probability_stability.py
 ```
 *Output: Generates `probability_stability.png`, plotting the likelihood of stability vs. inhibition percentage.*
+
+### Analysis: Noise Robustness
+We also verify that synchronization survives in the presence of biologically realistic noise (Additive White Gaussian Noise).
+
+```bash
+# Run the noise robustness check
+python3 paper/generate_noise_figure.py
+```
+*Output: Generates `figure_5_noise.png`, showing synchronization error vs noise intensity.*
+
+![Noise Robustness](noise_robustness.png)
 
 ## 🔑 Stability Criteria for Synchronization
 
