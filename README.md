@@ -93,10 +93,11 @@ We demonstrate that non-negativity is **not necessary**. Synchronization is pres
 > [!IMPORTANT]
 > **Condition**: The eigenvalues $\lambda_k$ of the coupling matrix $\mathcal{C}$ must lie within the stability region of the Master Stability Function (MSF) for the dynamical system.
 >
-> $\text{Re}(\lambda_k) < 0 \quad \text{for } k=2 \dots N$
+> $$ \text{Re}(\lambda_k) < 0 \quad \text{for } \quad k=2 \dots N $$
 
 In practice, this means we can have negative links ($A_{ij} < 0$) as long as the "net" connectivity remains diffusive and stable. For Lorenz and Jansen-Rit systems, this often implies that the second largest eigenvalue $\tilde{\lambda}_2$ must satisfy:
-$|\tilde{\lambda}_2| \ge |\bar{d}|$
+
+$$ |\tilde{\lambda}_2| \ge |\bar{d}| $$
 
 Where $\bar{d}$ is the maximum Lyapunov exponent (divergence) of the isolated node dynamics.
 
