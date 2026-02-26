@@ -1,42 +1,45 @@
-# Spectral Stability & Synchronization in Mixed-Sign Neural Networks
+# Spectral Stability & Synchronization in Mixed-Sign Neural Networks (Scaled Edition)
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Scientific Computing](https://img.shields.io/badge/SciPy-Stack-orange?style=flat-square&logo=scipy&logoColor=white)](https://scipy.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)](https://github.com/zapata131/simulation-chaotic-systems-negative-couplings)
+[![Status](https://img.shields.io/badge/Status-Rigorous-brightgreen?style=flat-square)](https://github.com/zapata131/simulation-chaotic-systems-negative-couplings)
 
-> **Simulating the emergence of synchronization in complex networks with inhibitory (negative) interactions.**
+> **Simulating the emergence of synchronization in large-scale ($N=100$) networks with biologically realistic inhibition (Dale's Law).**
 
-This repository explores the counter-intuitive phenomenon where networks can achieve global synchronization even in the presence of antagonisms, competition, or inhibition. Originally demonstrating this effect in chaotic **Lorenz oscillators**, we have extended the framework to **Biological Neural Mass Models**, simulating how inhibitory synaptic connections contribute to brain network dynamics.
+This repository explores how networks with inhibitory (negative) connections can achieve global synchronization. We demonstrate that provided the topology satisfies a **Relaxed Spectral Stability Condition**, global coherence is a robust attractor even in networks with 20% inhibitory populations.
 
-![Jansen-Rit Simulation](jansen_rit_simulation.png)
-*Figure 1: Synchronization of a Jensen-Rit neural network with 10% inhibitory connections.*
+![Jansen-Rit Scaled Simulation](paper/figures_full/figure_4_full_dynamics.png)
+*Figure 1: Robust synchronization of a 100-node Dale-compliant neural network (Basin Stability = 1.0).*
 
-## 🧠 Biological Modelling: Neural Mass Networks
+## 🧠 Biological Modelling: Dale-Compliant Networks
 
-This project applies the "negative coupling" concept to the study of cortical networks, where **inhibitory interneurons** are essential for regulating activity. We utilize the **Jansen-Rit Neural Mass Model** to simulate cortical columns, exploring how inhibition "sculpts" global dynamics.
+This project applies the "negative coupling" concept to the study of cortical networks, enforcing **Dale's Law**:
+- **Node Classification**: Each neuron is either Excitatory or Inhibitory, and its output sign is fixed for all synapses.
+- **Structural Proportions**: We utilize an 80/20 E-I ratio, mimicking mammalian cortical architecture.
+- **Large Scale**: Validated on high-dimensional networks ($N=100$) to move beyond small-system artifacts.
 
 ### Key Capabilities
-- **Cortical Column Simulation**: High-fidelity implementation of the Jansen-Rit ODEs (Pyramidal, Excitatory, Inhibitory populations).
-- **Mixed-Sign Topology**: Simulates realistic networks with both excitatory and inhibitory synaptic connections ($A_{ij} < 0$).
-- **Spectral Stability**: Algorithms to generate Small-World topologies that satisfy the **Relaxed Spectral Stability Condition**, ensuring coherence even in competitive networks.
-- **Robust Synchronization**: Visual proof that networks can achieve perfect synchronization (Zero Error) despite significant inhibitory feedback.
+- **Cortical Mass Simulation**: High-fidelity implementation of scaled Jansen-Rit ODEs.
+- **Dale-Compliant Topology**: Realistic mixed-sign networks where inhibition is a node property, not just an edge weight.
+- **Statistical Basin Stability**: Monte Carlo evidence ($M=100$ trials) proving that synchronization is a near-universal attractor.
 
 ### Run the Simulation
 ```bash
-python3 jansen_rit_network.py
+# Full Edition (N=100, Dale's Law, Monte Carlo)
+python3 full-simulation/generate_figures_full.py
+
+# Simple Edition (N=20 baseline)
+python3 simple-simulation/generate_figures.py
 ```
-*Output: Generates `jansen_rit_simulation.png` visualizing the coupling matrix spectrum, network topology, and neural activity.*
+*Output: Generates statistical visualizations in `paper/figures_full/`.*
 
 ### Research Insights
 
-Our simulations reveal a critical mechanism for biological networks: **Inhibition does not preclude synchronization; it structures it.**
+Our simulations reveal a critical mechanism: **Inhibition does not preclude synchronization; it structures it.**
 
-- **Binding by Inhibition**: Contrary to the intuition that inhibition segregates activity, our results show that **inhibitory interneurons can actively bind functional assemblies**. By "sculpting" the network's eigenspectrum, inhibition defines the boundaries of the synchronization manifold.
-- **Robustness**: The system demonstrates remarkable robustness, maintaining global gamma-band coherence even with significant fractions of inhibitory connections (e.g., 10%), provided the global topology remains spectrally stable.
-- **Clinical Relevance**:
-    - **Epilepsy**: Suggests that hypersynchronization (seizures) can occur *even in the presence of strong inhibition* if the network's spectral properties become pathological.
-    - **Cognition**: Supports the "Binding by Synchrony" hypothesis, showing how flexible cognitive processing can emerge from fixed, mixed-sign anatomical connectivity.
+- **Binding by Inhibition**: Contrary to the intuition that inhibition segregates activity, our results show that **inhibitory interneurons can actively bind functional assemblies**. 
+- **Statistical Robustness**: The system demonstrates 100% synchronization success ($S=1.0$) across heterogeneous initial states, provided the global topology remains spectrally stable ($\text{Re}(\lambda) \le 0$).
 
 > **Read the full paper**: The complete scientific paper, including mathematical proofs and extensive citations, is available in the `paper/` directory.
 
